@@ -96,7 +96,7 @@ export function ProjectsSection() {
               key={project.id}
               className="overflow-hidden relative flex-col border-4 transition-all duration-700 group border-foreground bg-card hover:-translate-y-4 hover:rotate-1"
               style={{ boxShadow: "var(--shadow-xl)" }}
-              onMouseEnter={() => setHoveredProject(project.id)}
+              onMouseEnter={() => setHoveredProject(project.id as number)}
               onMouseLeave={() => setHoveredProject(null)}
             >
               <div

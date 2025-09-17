@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { GripVertical, Edit, Save, X, Trash2 } from "lucide-react"
+import { GripVertical, Edit, Save, X, Trash2, Plus } from "lucide-react"
 import Image from "next/image"
 
 interface Project {
@@ -124,6 +124,7 @@ export function ProjectsEditSection() {
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [formData, setFormData] = useState<Partial<ProjectForm>>({})
+  const [isAddingNew, setIsAddingNew] = useState(false)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -184,6 +185,7 @@ export function ProjectsEditSection() {
 
   const handleEdit = (project: Project) => {
     setEditingProject(project)
+    setIsAddingNew(false)
     setFormData({
       ...project,
       techs: project.techs?.join(', ') ?? '',
@@ -192,34 +194,70 @@ export function ProjectsEditSection() {
     setIsDialogOpen(true)
   }
 
-  const handleSave = async () => {
-    if (!editingProject) return
+  const handleAddNew = () => {
+    setEditingProject(null)
+    setIsAddingNew(true)
+    setFormData({
+      title: '',
+      description: '',
+      image: '',
+      techs: '',
+      live: '',
+      order: String(projects.length + 1),
+    })
+    setIsDialogOpen(true)
+  }
 
+  const handleSave = async () => {
     try {
-      const updatedProject = {
-        ...editingProject,
+      const projectData = {
         ...formData,
         techs: (formData.techs || '').split(',').map(tech => tech.trim()).filter(Boolean),
-        order: formData.order ? Number(formData.order) : editingProject.order,
+        order: formData.order ? Number(formData.order) : (projects.length + 1),
+        createdAt: new Date().toISOString(),
       }
 
-      const response = await fetch(`https://62c1218ceff7f7856f0990a7.mockapi.io/api/projects/${editingProject.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedProject),
-      })
+      if (isAddingNew) {
+        // Tạo dự án mới
+        const response = await fetch('https://62c1218ceff7f7856f0990a7.mockapi.io/api/projects', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(projectData),
+        })
 
-      if (response.ok) {
-        // Update local state
-        setProjects(projects.map(p => p.id === editingProject.id ? updatedProject : p))
-        setIsDialogOpen(false)
-        setEditingProject(null)
-        setFormData({})
+        if (response.ok) {
+          const newProject = await response.json()
+          setProjects([...projects, newProject])
+          setIsDialogOpen(false)
+          setIsAddingNew(false)
+          setFormData({})
+        }
+      } else if (editingProject) {
+        // Cập nhật dự án hiện có
+        const updatedProject = {
+          ...editingProject,
+          ...projectData,
+        }
+
+        const response = await fetch(`https://62c1218ceff7f7856f0990a7.mockapi.io/api/projects/${editingProject.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedProject),
+        })
+
+        if (response.ok) {
+          setProjects(projects.map(p => p.id === editingProject.id ? updatedProject : p))
+          setIsDialogOpen(false)
+          setEditingProject(null)
+          setFormData({})
+        }
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật dự án:', error)
+      console.error('Lỗi khi lưu dự án:', error)
     }
   }
 
@@ -259,6 +297,16 @@ export function ProjectsEditSection() {
 
   return (
     <div>
+      <div className="mb-6">
+        <Button
+          onClick={handleAddNew}
+          className="flex gap-2 items-center"
+        >
+          <Plus className="w-4 h-4" />
+          Thêm dự án mới
+        </Button>
+      </div>
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -279,7 +327,7 @@ export function ProjectsEditSection() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="w-full md:max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Chỉnh sửa dự án</DialogTitle>
+            <DialogTitle>{isAddingNew ? 'Thêm dự án mới' : 'Chỉnh sửa dự án'}</DialogTitle>
           </DialogHeader>
           
           <div className="grid grid-cols-2 gap-4">
@@ -360,7 +408,7 @@ export function ProjectsEditSection() {
               className="flex gap-2 items-center"
             >
               <Save className="w-4 h-4" />
-              Lưu
+              {isAddingNew ? 'Thêm' : 'Lưu'}
             </Button>
           </div>
         </DialogContent>

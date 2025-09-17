@@ -8,27 +8,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 
 export function HeroSection() {
-  const { hero } = portfolioContent
-  const [nameAnimation, setNameAnimation] = useState("")
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-
-  useEffect(() => {
-    const script = document.createElement("script")
-    script.src = "https://cdn.lordicon.com/lordicon.js"
-    document.head.appendChild(script)
-
-    let index = 0
-    const fullName = hero.name
-    const interval = setInterval(() => {
-      if (index <= fullName.length) {
-        setNameAnimation(fullName.slice(0, index))
-        index++
-      } else {
-        clearInterval(interval)
-      }
-    }, 100)
-    return () => clearInterval(interval)
-  }, [hero.name])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -111,20 +91,19 @@ export function HeroSection() {
                   colors="primary:#0f172a,secondary:#0f172a"
                   style={{ width: "28px", height: "28px", marginRight: "8px" }}
                 />
-                {hero.location}
+                TP. Hồ Chí Minh, Việt Nam
               </div>
               <h1 className="text-3xl font-black tracking-tight leading-tight md:text-[45px] text-foreground">
                 <span className="text-secondary-foreground/80">
-                  {nameAnimation}
+                Quick Showcase các dự án mình đã thực hiện!
                 </span>
-                <span className="animate-pulse text-accent">|</span>
               </h1>
             </div>
             <div className="relative group w-lg">
               <Image
                 quality={100}
                 draggable={false}
-                src="/a-mountainous-landscape-with-a-lake.png" alt="Hero Section" width={1500} height={1500} className="object-contain w-full h-auto" />
+                src="/a-mountainous-landscape-with-a-lake.webp" alt="Hero Section" width={1500} height={1500} className="object-contain w-full h-auto" />
             </div>
           </div>
           <div className="flex flex-wrap gap-6 justify-center my-10 lg:justify-center">

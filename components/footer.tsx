@@ -75,7 +75,7 @@ export function Footer() {
               <Image
                 quality={100}
                 draggable={false}
-                src="/a-mountainous-landscape-with-a-lake.png" alt="Hero Section" width={1500} height={1500} className="object-contain w-[300px] h-auto mx-auto" />
+                src="/a-mountainous-landscape-with-a-lake.webp" alt="Hero Section" width={1500} height={1500} className="object-contain w-[300px] h-auto mx-auto" />
             </div>
           </div>
 
