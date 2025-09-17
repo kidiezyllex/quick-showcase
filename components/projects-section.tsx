@@ -107,21 +107,29 @@ export function ProjectsSection() {
               </div>
 
               <div className="overflow-hidden relative h-80">
+              <h3 className="absolute top-3 left-1/2 mb-4 text-2xl font-black transition-all duration-300 transform -translate-x-1/2 text-foreground group-hover:-translate-y-10">
+                  {project.title}
+                </h3>
                 <Image
                   src={project.image}
                   alt={project.title}
                   fill
                   className="object-contain transition-transform duration-700 group-hover:scale-125"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t via-transparent to-transparent opacity-0 transition-opacity duration-500 from-background/90 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-t via-transparent to-transparent opacity-0 transition-opacity duration-500 from-black/90 group-hover:opacity-100" />
               </div>
 
               <div className="relative flex-1 p-4">
                 <div className="absolute top-0 right-0 w-8 h-8 bg-accent rounded-bl-[1.5rem] border-l-4 border-b-4 border-foreground" />
-                <h3 className="mb-4 text-3xl font-black transition-colors duration-300 text-foreground group-hover:text-primary">
-                  {project.title}
-                </h3>
-                <p className="mb-4 text-lg leading-relaxed text-muted-foreground line-clamp-3">{project.description}</p>
+            
+                <ul className="mb-4 space-y-1 text-lg leading-relaxed text-muted-foreground">
+                  {project.description.split('-').filter(item => item.trim()).map((item, index) => (
+                    <li key={index} className="flex items-start line-clamp-1">
+                      <span className="mt-2 mr-2 text-black" style={{ fontSize: '8px' }}>●</span>
+                      <span className="flex-1">{item.trim()}</span>
+                    </li>
+                  ))}
+                </ul>
 
                 <div className="flex flex-wrap gap-3 mb-4">
                   {(project.tech ?? project.techs ?? []).map((tech, i) => (
@@ -139,7 +147,7 @@ export function ProjectsSection() {
                     </span>
                   ))}
                 </div>
-                <div className="flex flex-1 justify-center items-center mx-auto w-full">
+                <div className="flex flex-1 justify-center items-center pt-2 mx-auto w-full">
                   <Button
                     size="lg"
                     className="rounded-[1.5rem] bg-secondary hover:bg-secondary/90 text-secondary-foreground/80 px-6 py-5 font-black shadow-brutal hover:shadow-xl transition-all duration-500 hover:scale-105 hover:rotate-1 border-3 border-foreground text-base"
