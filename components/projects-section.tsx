@@ -4,12 +4,15 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { useState, useEffect } from "react"
+import Lightbox from "yet-another-react-lightbox"
+import "yet-another-react-lightbox/styles.css"
 
 type Project = {
   id: string | number
   title: string
   description: string
-  image: string
+  images: string[]
+  type?: string
   techs?: string[]
   tech?: string[]
   live: string
@@ -22,6 +25,9 @@ export function ProjectsSection() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
+  const [currentProjectImages, setCurrentProjectImages] = useState<string[]>([])
 
   useEffect(() => {
     const load = async () => {
@@ -48,16 +54,22 @@ export function ProjectsSection() {
     }
   }, [])
 
+  const openLightbox = (images: string[], index: number) => {
+    setCurrentProjectImages(images)
+    setLightboxIndex(index)
+    setLightboxOpen(true)
+  }
+
   return (
     <section
       style={{
-        backgroundImage: `
+        backgroundImage: ` 
             linear-gradient(#C2E8D6 2px, transparent 2px),
             linear-gradient(90deg, #C2E8D6 2px, transparent 2px)
           `,
         backgroundSize: '60px 60px',
       }}
-      id="projects" className="overflow-hidden relative z-50 px-4 py-32">
+      id="projects" className="overflow-hidden relative z-50 px-4 py-10">
       <div className="absolute inset-0 -z-10">
         {[...Array(8)].map((_, i) => (
           <div
@@ -80,7 +92,7 @@ export function ProjectsSection() {
 
       <div className="mx-auto max-w-7xl">
         <div className="relative mb-20 space-y-8 text-center">
-          <h2 className="mb-8 text-6xl font-black text-secondary-foreground/80 md:text-8xl">
+          <h2 className="mb-8 text-6xl font-black text-secondary-foreground/90 md:text-8xl">
             All Projects
           </h2>
         </div>
@@ -94,34 +106,82 @@ export function ProjectsSection() {
           {projects.map((project, index) => (
             <Card
               key={project.id}
-              className="overflow-hidden relative flex-col border-4 transition-all duration-700 group border-foreground bg-card hover:-translate-y-4 hover:rotate-1"
+              className="overflow-hidden relative flex-col border-4 transition-all duration-700 group border-foreground bg-accent hover:-translate-y-4 hover:rotate-1"
               style={{ boxShadow: "var(--shadow-xl)" }}
               onMouseEnter={() => setHoveredProject(project.id as number)}
               onMouseLeave={() => setHoveredProject(null)}
             >
-              <div
-                className="absolute top-6 left-6 z-20 w-12 h-12 bg-primary rounded-[1.5rem] flex items-center justify-center border-4 border-foreground"
-                style={{ boxShadow: "var(--shadow-md)" }}
-              >
-                <span className="text-lg font-black text-primary-foreground">0{index + 1}</span>
+              <div className="flex absolute top-4 left-4 z-50 gap-3 items-center bg-accent">
+                <Button
+                  variant="mint"
+                  size="sm"
+                  className="!w-8 !h-8 rounded-full"
+                >
+                  <span className="text-sm font-black text-primary-foreground">0{index + 1}</span>
+                </Button>
+                <Button
+                  variant="mint"
+                  size="sm"
+                >
+                  <span className="text-sm font-black text-primary-foreground">{project.type || 'Web App'}</span>
+                </Button>
+                <Button
+                    size="sm"
+                    variant="mint"
+                    asChild
+                  >
+                    <a href={project.live} target="_blank" rel="noopener noreferrer">
+                      Demo
+                      <lord-icon
+                        src="https://cdn.lordicon.com/excswhey.json"
+                        trigger="loop"
+                        colors="primary:#0f172a,secondary:#0f172a"
+                        style={{ width: "28px", height: "28px", marginLeft: "8px" }}
+                      />
+                    </a>
+                  </Button>
               </div>
-
-              <div className="overflow-hidden relative h-80">
-              <h3 className="absolute top-3 left-1/2 mb-4 text-2xl font-black transition-all duration-300 transform -translate-x-1/2 text-foreground group-hover:-translate-y-10">
-                  {project.title}
-                </h3>
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-contain transition-transform duration-700 group-hover:scale-125"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t via-transparent to-transparent opacity-0 transition-opacity duration-500 from-black/90 group-hover:opacity-100" />
+              <div className="flex overflow-hidden relative flex-col justify-between h-fit bg-accent">
+                <div className="relative w-full h-72">
+                  <Image
+                    src={project.images?.[0] || '/placeholder.jpg'}
+                    alt={project.title}
+                    fill
+                    className="object-contain object-bottom transition-transform duration-700 group-hover:scale-110"
+                  />
+                </div>
               </div>
+              <div className="relative flex-1 p-4 bg-accent">
+                <div className="absolute top-0 right-0 w-8 h-8 bg-accent rounded-bl-[1.5rem] border-l-2 border-b-2 border-foreground" />
+                <h3 className="mb-4 text-lg font-black text-center text-emerald-700">{project.title}</h3>
+                {/* Image Gallery - Show up to 5 images */}
+                {project.images && project.images.length > 1 && (
+                  <div className="mb-4">
+                    <div className="flex flex-wrap gap-2">
+                      {project.images.slice(0, 5).map((image, imgIndex) => (
+                        <div
+                          key={imgIndex}
+                          className="overflow-hidden relative w-16 h-16 rounded-[8px] border-2 transition-all duration-300 cursor-pointer border-foreground/20 hover:border-primary hover:scale-105"
+                          onClick={() => openLightbox(project.images, imgIndex)}
+                        >
+                          <Image
+                            src={image}
+                            alt={`${project.title} - Image ${imgIndex + 1}`}
+                            fill
+                            className="object-cover"
+                          />
+                          {imgIndex === 4 && project.images.length > 5 && (
+                            <div className="flex absolute inset-0 justify-center items-center bg-black/50">
+                              <span className="text-xs font-bold text-white">+{project.images.length - 5}</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs italic text-muted-foreground">(Click để xem ảnh)</p>
+                  </div>
+                )}
 
-              <div className="relative flex-1 p-4">
-                <div className="absolute top-0 right-0 w-8 h-8 bg-accent rounded-bl-[1.5rem] border-l-4 border-b-4 border-foreground" />
-            
                 <ul className="mb-4 space-y-1 text-lg leading-relaxed text-muted-foreground">
                   {project.description.split('-').filter(item => item.trim()).map((item, index) => (
                     <li key={index} className="flex items-start line-clamp-1">
@@ -138,7 +198,7 @@ export function ProjectsSection() {
                       className={`px-2 py-1 rounded-[1.5rem] text-xs font-bold border-2 border-foreground transition-all duration-300 hover:scale-110 ${i % 3 === 0
                         ? "bg-primary text-primary-foreground"
                         : i % 3 === 1
-                          ? "bg-secondary text-secondary-foreground/80"
+                          ? "bg-secondary text-secondary-foreground/90"
                           : "bg-accent text-accent-foreground"
                         }`}
                       style={{ boxShadow: "var(--shadow-sm)" }}
@@ -147,29 +207,23 @@ export function ProjectsSection() {
                     </span>
                   ))}
                 </div>
-                <div className="flex flex-1 justify-center items-center pt-2 mx-auto w-full">
-                  <Button
-                    size="lg"
-                    className="rounded-[1.5rem] bg-secondary hover:bg-secondary/90 text-secondary-foreground/80 px-6 py-5 font-black shadow-brutal hover:shadow-xl transition-all duration-500 hover:scale-105 hover:rotate-1 border-3 border-foreground text-base"
-                    style={{ boxShadow: "var(--shadow-lg)" }}
-                    asChild
-                  >
-                    <a href={project.live} target="_blank" rel="noopener noreferrer">
-                      <lord-icon
-                        src="https://cdn.lordicon.com/lqxfrxad.json"
-                        trigger="loop"
-                        colors="primary:#0f172a,secondary:#0f172a"
-                        style={{ width: "28px", height: "28px", marginRight: "8px" }}
-                      />
-                      Live Demo
-                    </a>
-                  </Button>
-                </div>
+         
               </div>
             </Card>
           ))}
         </div>
       </div>
+
+      {/* Lightbox for image gallery */}
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        index={lightboxIndex}
+        slides={currentProjectImages.map(image => ({ src: image }))}
+        on={{
+          view: ({ index }) => setLightboxIndex(index),
+        }}
+      />
     </section>
   )
 }
