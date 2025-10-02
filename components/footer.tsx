@@ -55,7 +55,7 @@ export function Footer() {
                   style={{ width: "28px", height: "28px", marginLeft: "8px" }}
                 />
               </Button>
-              <h2 className="text-4xl font-black leading-tight md:text-5xl text-secondary-foreground/90">
+              <h2 className="text-4xl font-black leading-tight md:text-5xl text-secondary-foreground">
                 Sẵn sàng hợp tác với mình chứ.
               </h2>
               <Image

@@ -16,15 +16,15 @@ const buttonVariants = cva(
         outline:
           'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary:
-          'bg-secondary text-secondary-foreground/90shadow-xs hover:bg-secondary/80',
+          'bg-secondary text-secondary-foregroundshadow-xs hover:bg-secondary/80',
         accent:
           'bg-accent text-accent-foreground shadow-xs hover:bg-accent/90',
         ghost:
           'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
-        mint: '!w-fit bg-secondary hover:bg-secondary/90 text-secondary-foreground/90 px-4 py-5 font-black shadow-brutal hover:shadow-xl transition-all duration-500 hover:scale-105 hover:rotate-1 border-3 border-foreground text-base !rounded-full',
+        mint: '!w-fit bg-secondary hover:bg-secondary/90 text-secondary-foreground px-4 py-5 font-black shadow-brutal hover:shadow-xl transition-all duration-500 hover:scale-105 hover:rotate-1 border-3 border-foreground text-base !rounded-full',
         apricot: '!w-fit !rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-5 font-black shadow-brutal hover:shadow-xl transition-all duration-500 hover:scale-105 hover:-rotate-1 border-3 border-foreground text-base',
-        white: '!w-fit !rounded-full border-3 border-foreground text-foreground px-4 py-5 font-black transition-all duration-500 hover:scale-105 hover:rotate-1 shadow-brutal hover:shadow-xl text-base'
+        white: '!w-fit !bg-white !rounded-full border-3 border-foreground text-foreground px-4 py-5 font-black transition-all duration-500 hover:scale-105 hover:rotate-1 shadow-brutal hover:shadow-xl text-base'
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

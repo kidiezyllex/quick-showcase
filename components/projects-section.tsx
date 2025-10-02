@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import Lightbox from "yet-another-react-lightbox"
+import Zoom from "yet-another-react-lightbox/plugins/zoom"
 import "yet-another-react-lightbox/styles.css"
 
 type Project = {
@@ -69,7 +70,7 @@ export function ProjectsSection() {
           `,
         backgroundSize: '60px 60px',
       }}
-      id="projects" className="overflow-hidden relative z-50 px-4 py-10">
+      id="projects" className="overflow-hidden relative z-50 py-10">
       <div className="absolute inset-0 -z-10">
         {[...Array(8)].map((_, i) => (
           <div
@@ -89,18 +90,60 @@ export function ProjectsSection() {
           </div>
         ))}
       </div>
-
-      <div className="mx-auto max-w-7xl">
-        <div className="relative mb-20 space-y-8 text-center">
-          <h2 className="mb-8 text-6xl font-black text-secondary-foreground/90 md:text-8xl">
-            All Projects
-          </h2>
+      <div className="relative my-20 space-y-8 text-center flex justify-center items-center">
+        {/* Wavy line going through the center of the Card */}
+        <div className="absolute top-1/2 left-0 w-full transform -translate-y-1/2 z-0">
+          <svg
+            viewBox="0 0 1200 60"
+            className="w-full h-[60px]"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,30 C100,10 200,50 300,30 C400,10 500,50 600,30 C700,10 800,50 900,30 C1000,10 1100,50 1200,30"
+              stroke="#10b98190"
+              strokeWidth="6"
+              fill="none"
+              opacity="0.8"
+            />
+          </svg>
         </div>
+        <Card className="relative p-8 w-fit z-10 bg-background">
+         <span className="text-4xl font-black text-secondary-foreground/90 md:text-6xl mb-8">All Projects</span>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="mint"
+              size="sm"
+              style={{ boxShadow: "var(--shadow-sm)" }}
+            >
+              <span className="text-sm font-black text-primary-foreground">Tất cả</span>
+            </Button>
+            <Button
+              variant="white"
+              size="sm"
+              style={{ boxShadow: "var(--shadow-sm)" }}
+            >
+              <span className="text-sm font-black text-primary-foreground">#Web-App</span>
+            </Button>
+            <Button
+              variant="white"
+              size="sm"
+              style={{ boxShadow: "var(--shadow-sm)" }}
+            >
+              <span className="text-sm font-black text-primary-foreground">#Mobile-App</span>
+            </Button>
+            <Button
+              variant="white"
+              size="sm"
+              style={{ boxShadow: "var(--shadow-sm)" }}
+            >
+              <span className="text-sm font-black text-primary-foreground">#Figma</span>
+            </Button>
+          </div>
+        </Card>
+      </div>
+      <div className="mx-auto max-w-7xl">
         {loading && (
           <div className="mb-20 text-center text-muted-foreground">Đang tải dự án...</div>
-        )}
-        {error && (
-          <div className="mb-20 text-center text-red-600">{error}</div>
         )}
         <div className="grid gap-6 items-stretch mb-20 lg:grid-cols-3">
           {projects.map((project, index) => (
@@ -111,43 +154,47 @@ export function ProjectsSection() {
               onMouseEnter={() => setHoveredProject(project.id as number)}
               onMouseLeave={() => setHoveredProject(null)}
             >
-              <div className="flex absolute top-4 left-4 z-50 gap-3 items-center bg-accent">
+              <div className="flex p-4 gap-3 items-center bg-accent">
                 <Button
                   variant="mint"
                   size="sm"
                   className="!w-8 !h-8 rounded-full"
+                  style={{ boxShadow: "var(--shadow-sm)" }}
                 >
                   <span className="text-sm font-black text-primary-foreground">0{index + 1}</span>
                 </Button>
                 <Button
                   variant="mint"
                   size="sm"
+                  style={{ boxShadow: "var(--shadow-sm)" }}
                 >
                   <span className="text-sm font-black text-primary-foreground">{project.type || 'Web App'}</span>
                 </Button>
-                <Button
-                    size="sm"
-                    variant="mint"
-                    asChild
-                  >
-                    <a href={project.live} target="_blank" rel="noopener noreferrer">
-                      Demo
-                      <lord-icon
-                        src="https://cdn.lordicon.com/excswhey.json"
-                        trigger="loop"
-                        colors="primary:#0f172a,secondary:#0f172a"
-                        style={{ width: "28px", height: "28px", marginLeft: "8px" }}
-                      />
-                    </a>
-                  </Button>
-              </div>
+                {project.live && <Button
+                  size="sm"
+                  variant="mint"
+                  asChild
+                  style={{ boxShadow: "var(--shadow-sm)" }}
+                >
+                  <a href={project.live} target="_blank" rel="noopener noreferrer">
+                    Demo
+                    <lord-icon
+                      src="https://cdn.lordicon.com/excswhey.json"
+                      trigger="loop"
+                      colors="primary:#0f172a,secondary:#0f172a"
+                      style={{ width: "28px", height: "28px", marginLeft: "8px" }}
+                    />
+                  </a>
+                </Button>
+                }
+              </div >
               <div className="flex overflow-hidden relative flex-col justify-between h-fit bg-accent">
-                <div className="relative w-full h-72">
+                <div className="relative w-full h-[200px] bg-red-500">
                   <Image
-                    src={project.images?.[0] || '/placeholder.jpg'}
+                    src={project.images?.[0]}
                     alt={project.title}
                     fill
-                    className="object-contain object-bottom transition-transform duration-700 group-hover:scale-110"
+                    className="object-cover w-full object-bottom transition-transform duration-700 group-hover:scale-110"
                   />
                 </div>
               </div>
@@ -178,7 +225,7 @@ export function ProjectsSection() {
                         </div>
                       ))}
                     </div>
-                    <p className="mt-2 text-xs italic text-muted-foreground">(Click để xem ảnh)</p>
+                    <p className="mt-2 text-sm italic text-muted-foreground">(Click để xem ảnh)</p>
                   </div>
                 )}
 
@@ -191,14 +238,14 @@ export function ProjectsSection() {
                   ))}
                 </ul>
 
-                <div className="flex flex-wrap gap-3 mb-4">
+                <div className="flex flex-wrap justify-center gap-3 mb-4">
                   {(project.tech ?? project.techs ?? []).map((tech, i) => (
                     <span
                       key={tech}
                       className={`px-2 py-1 rounded-[1.5rem] text-xs font-bold border-2 border-foreground transition-all duration-300 hover:scale-110 ${i % 3 === 0
                         ? "bg-primary text-primary-foreground"
                         : i % 3 === 1
-                          ? "bg-secondary text-secondary-foreground/90"
+                          ? "bg-secondary text-secondary-foreground"
                           : "bg-accent text-accent-foreground"
                         }`}
                       style={{ boxShadow: "var(--shadow-sm)" }}
@@ -207,7 +254,7 @@ export function ProjectsSection() {
                     </span>
                   ))}
                 </div>
-         
+
               </div>
             </Card>
           ))}
@@ -220,6 +267,18 @@ export function ProjectsSection() {
         close={() => setLightboxOpen(false)}
         index={lightboxIndex}
         slides={currentProjectImages.map(image => ({ src: image }))}
+        plugins={[Zoom]}
+        zoom={{
+          maxZoomPixelRatio: 3,
+          zoomInMultiplier: 2,
+          doubleTapDelay: 300,
+          doubleClickDelay: 300,
+          doubleClickMaxStops: 2,
+          keyboardMoveDistance: 50,
+          wheelZoomDistanceFactor: 100,
+          pinchZoomDistanceFactor: 100,
+          scrollToZoom: true,
+        }}
         on={{
           view: ({ index }) => setLightboxIndex(index),
         }}
