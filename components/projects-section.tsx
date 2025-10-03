@@ -90,9 +90,9 @@ export function ProjectsSection() {
           </div>
         ))}
       </div>
-      <div className="relative my-20 space-y-8 text-center flex justify-center items-center">
+      <div className="flex relative justify-center items-center my-20 space-y-8 text-center">
         {/* Wavy line going through the center of the Card */}
-        <div className="absolute top-1/2 left-0 w-full transform -translate-y-1/2 z-0">
+        <div className="absolute left-0 top-1/2 z-0 w-full transform -translate-y-1/2">
           <svg
             viewBox="0 0 1200 60"
             className="w-full h-[60px]"
@@ -107,9 +107,9 @@ export function ProjectsSection() {
             />
           </svg>
         </div>
-        <Card className="relative p-8 w-fit z-10 bg-background">
-         <span className="text-4xl font-black text-secondary-foreground/90 md:text-6xl mb-8">All Projects</span>
-          <div className="flex items-center gap-3">
+        <Card className="relative z-10 p-8 w-fit bg-background">
+         <span className="mb-8 text-4xl font-black text-secondary-foreground/90 md:text-6xl">All Projects</span>
+          <div className="flex gap-3 items-center">
             <Button
               variant="mint"
               size="sm"
@@ -154,7 +154,7 @@ export function ProjectsSection() {
               onMouseEnter={() => setHoveredProject(project.id as number)}
               onMouseLeave={() => setHoveredProject(null)}
             >
-              <div className="flex p-4 gap-3 items-center bg-accent">
+              <div className="flex gap-3 items-center p-4 bg-accent">
                 <Button
                   variant="mint"
                   size="sm"
@@ -189,12 +189,12 @@ export function ProjectsSection() {
                 }
               </div >
               <div className="flex overflow-hidden relative flex-col justify-between h-fit bg-accent">
-                <div className="relative w-full h-[200px] bg-red-500">
+                <div className="relative w-full h-[200px]">
                   <Image
                     src={project.images?.[0]}
                     alt={project.title}
                     fill
-                    className="object-cover w-full object-bottom transition-transform duration-700 group-hover:scale-110"
+                    className="object-cover object-bottom w-full transition-transform duration-700 group-hover:scale-110"
                   />
                 </div>
               </div>
@@ -238,7 +238,7 @@ export function ProjectsSection() {
                   ))}
                 </ul>
 
-                <div className="flex flex-wrap justify-center gap-3 mb-4">
+                <div className="flex flex-wrap gap-3 justify-center mb-4">
                   {(project.tech ?? project.techs ?? []).map((tech, i) => (
                     <span
                       key={tech}
